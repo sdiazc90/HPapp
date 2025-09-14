@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cuentos de Horror</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Gothic+A1:wght@400;700&display=swap');
+      
+      .horror-title {
+        font-family: 'Creepster', cursive;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
+      
+      body {
+        background: #0a0a0a;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* Fondo con gradiente oscuro */
+      .dark-gradient {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(26, 15, 31, 0.6) 0%,   /* púrpura oscuro 60% opaco */
+          rgba(10, 10, 10, 0.6) 100%  /* negro 60% opaco */
+        );
+        z-index: -10;
+      }
+
+      
+      /* Efecto de rayos sutiles */
+      .lightning {
+        position: fixed;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 300%;
+        background: linear-gradient(to bottom, 
+          transparent 0%, 
+          rgba(147, 51, 234, 0.1) 45%,
+          rgba(147, 51, 234, 0.3) 50%,
+          rgba(147, 51, 234, 0.1) 55%,
+          transparent 100%);
+        opacity: 0;
+        transform: skewX(-20deg);
+        animation: lightning 8s infinite;
+        z-index: -5;
+      }
+      
+      .bg-image {
+        position: fixed;
+        inset: 0; /* equivale a top:0; right:0; bottom:0; left:0 */
+        background: url("img/6.jpg") no-repeat center center;
+        background-size: cover;
+        z-index: -11; /* queda detrás de todo */
+      }
+
+      @keyframes lightning {
+        0%, 90%, 100% { opacity: 0; }
+        93% { opacity: 0.6; }
+        95% { opacity: 0.2; }
+        97% { opacity: 0.8; }
+      }
+      
+      /* Sombras que se mueven */
+      .moving-shadow {
+        position: fixed;
+        background: radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, transparent 40%);
+        pointer-events: none;
+        z-index: -8;
+      }
+      
+      .shadow-1 {
+        width: 400px;
+        height: 400px;
+        top: -200px;
+        left: -200px;
+        animation: float1 20s infinite ease-in-out;
+      }
+      
+      .shadow-2 {
+        width: 300px;
+        height: 300px;
+        bottom: -150px;
+        right: -150px;
+        animation: float2 15s infinite ease-in-out;
+      }
+      
+      .shadow-3 {
+        width: 500px;
+        height: 500px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: float3 25s infinite ease-in-out;
+      }
+      
+      @keyframes float1 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(100px, 50px) scale(1.1); }
+        66% { transform: translate(50px, -50px) scale(0.9); }
+      }
+      
+      @keyframes float2 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-100px, -100px) scale(1.2); }
+      }
+      
+      @keyframes float3 {
+        0%, 100% { transform: translate(-50%, -50%) scale(0.8); }
+        50% { transform: translate(-45%, -55%) scale(1); }
+      }
+      
+     
+
+      /* --- OPCIÓN 1 (POR DEFECTO): Sombras mayormente DETRÁS de la niebla --- */
+      .moving-shadow { z-index: -1; }
+      .monster-silhouette { z-index: -4; }
+      .nightmare-figures { z-index: -7; }
+      .fog-layer { z-index: -5; } /* La niebla principal está por delante de las sombras */
+      .global-fog-overlay { z-index: -5; } /* El desenfoque global está casi al frente */
+      
+    
+
+      /* Siluetas de monstruos más grotescas */
+      .monster-silhouette {
+        position: fixed;
+        pointer-events: none;
+        /* z-index se controla en la sección de arriba */
+        opacity: 0.3;
+        filter: blur(1px);
+      }
+      
+      /* Animación de ojos pulsantes */
+      @keyframes eyeGlow {
+        0%, 100% { 
+          fill: #ff0000; 
+          filter: drop-shadow(0 0 3px #ff0000) drop-shadow(0 0 10px #ff0000);
+          opacity: 0.4;
+        }
+        50% { 
+          fill: #ff6666; 
+          filter: drop-shadow(0 0 8px #ff0000) drop-shadow(0 0 20px #ff0000);
+          opacity: 1;
+        }
+      }
+      
+      .monster-eye {
+        animation: eyeGlow 3s infinite ease-in-out;
+      }
+      
+      .creature-shadow {
+        top: -200px;
+        left: -150px;
+        width: 400px;
+        height: 300px;
+        animation: creep 25s infinite ease-in-out;
+      }
+      
+      @keyframes creep {
+        0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        25% { transform: translate(100px, 50px) scale(1.1) rotate(-5deg); }
+        50% { transform: translate(200px, 0) scale(0.9) rotate(5deg); }
+        75% { transform: translate(100px, -50px) scale(1.05) rotate(-3deg); }
+      }
+
+      @keyframes slither {
+        0%, 100% { transform: translateX(0) translateY(0) scale(1) rotate(0deg); }
+        20% { transform: translateX(50px) translateY(-30px) scale(1.1) rotate(10deg); }
+        40% { transform: translateX(100px) translateY(20px) scale(0.95) rotate(-5deg); }
+        60% { transform: translateX(80px) translateY(-40px) scale(1.05) rotate(15deg); }
+        80% { transform: translateX(30px) translateY(10px) scale(0.98) rotate(-10deg); }
+      }
+      
+      /* Figuras humanoides espeluznantes */
+      .nightmare-figures {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        /* z-index se controla en la sección de arriba */
+        opacity: 0.3;
+        filter: blur(0.5px);
+      }
+      
+      .nightmare-figure {
+        position: absolute;
+        bottom: 0;
+        filter: contrast(1.2);
+        animation: sway 20s infinite ease-in-out;
+      }
+      
+      /* Animación de balanceo sutil */
+      @keyframes sway {
+        0%, 100% { transform: translateX(0) scaleY(1); }
+        25% { transform: translateX(-10px) scaleY(1.02); }
+        50% { transform: translateX(5px) scaleY(0.98); }
+        75% { transform: translateX(-5px) scaleY(1.01); }
+      }
+      
+      /* Sonrisas brillantes pulsantes */
+      @keyframes teethGlow {
+        0%, 100% { 
+          fill: #ffffff;
+          filter: drop-shadow(0 0 2px #ffffff);
+          opacity: 0.6;
+        }
+        50% { 
+          fill: #ffffcc;
+          filter: drop-shadow(0 0 5px #ffffff);
+          opacity: 0.9;
+        }
+      }
+      
+      .nightmare-teeth {
+        animation: teethGlow 4s infinite ease-in-out;
+      }
+      
+      /* Ojos brillantes */
+      /* Modifica los porcentajes para cambiar el patrón de parpadeo. 
+         Por ejemplo, para un parpadeo más rápido, reduce la distancia entre 90% y 95%. */
+      @keyframes eyeFlicker {
+        0%, 90%, 100% { opacity: 0; }
+        /* Modifica la opacidad aquí para cambiar el brillo máximo del ojo durante el parpadeo. */
+        95% { opacity: 0.8; }
+      }
+      
+      .nightmare-eyes {
+        /* Modifica el color de relleno del ojo. */
+        fill: #ff6666;
+        /* Modifica el 'drop-shadow' para cambiar el color y la intensidad del brillo (resplandor). */
+        filter: drop-shadow(0 0 3px #ff0000);
+        /* Modifica la duración (ej: 10s) para cambiar la frecuencia general del parpadeo. */
+        animation: eyeFlicker 15s infinite;
+      }
+      
+      /* Efecto de texto con glitch */
+      .glitch-text {
+        animation: glitch 3s infinite;
+      }
+      
+      @keyframes glitch {
+        0%, 90%, 100% { 
+          text-shadow: 
+            2px 2px 4px rgba(0, 0, 0, 0.8),
+            0 0 10px rgba(147, 51, 234, 0.5);
+        }
+        92% { 
+          text-shadow: 
+            -2px 0 4px rgba(255, 0, 0, 0.8),
+            2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        94% { 
+          text-shadow: 
+            2px -2px 4px rgba(0, 255, 0, 0.8),
+            2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+      }
+      
+      /* Partículas flotantes */
+      .particle {
+        position: fixed;
+        pointer-events: none;
+        opacity: 0.5;
+        z-index: -6;
+      }
+      
+      .particle::before {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #9333ea;
+        border-radius: 50%;
+        animation: floatUp 10s infinite linear;
+      }
+      
+      @keyframes floatUp {
+        0% { transform: translateY(100vh) translateX(200px); opacity: 0; }
+        10% { opacity: 0.5; }
+        90% { opacity: 0.5; }
+        100% { transform: translateY(-10vh) translateX(50px); opacity: 0; }
+      }
+
+      /* Capas de niebla adicionales */
+      .fog-layer {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background-repeat: no-repeat;
+        opacity: 0.2;
+        /* z-index se controla en la sección de arriba */
+      }
+
+      .fog-1 {
+        background-image: radial-gradient(circle at 20% 80%, rgba(100, 110, 140, 0.15) 0%, transparent 10%);
+        animation: slow-drift 120s infinite linear alternate;
+      }
+
+      .fog-2 {
+        background-image: radial-gradient(circle at 80% 40%, rgba(100, 110, 140, 0.1) 0%, transparent 15%);
+        animation: slow-drift 90s infinite linear;
+      }
+
+      .fog-3 {
+        background-image: radial-gradient(circle at 50% 50%, rgba(100, 110, 140, 0.12) 0%, transparent 20%);
+        animation: slow-swirl 150s infinite linear;
+      }
+
+      
+
+      @keyframes slow-drift {
+        from {
+          transform: translateX(-5%) translateY(2%) rotate(-5deg);
+        }
+        to {
+          transform: translateX(5%) translateY(-2%) rotate(5deg);
+        }
+      }
+
+      @keyframes slow-swirl {
+        from {
+          transform: scale(1) rotate(0deg);
+        }
+        to {
+          transform: scale(1.2) rotate(360deg);
+        }
+      }
+
+      /* Efecto de niebla global con blur */
+      .global-fog-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(180, 190, 210, 0.05); /* Fondo semitransparente muy sutil */
+        backdrop-filter: blur(2px); /* Efecto niebla/vidrio */
+        -webkit-backdrop-filter: blur(1px); /* Para navegadores más antiguos */
+        pointer-events: none;
+        /* z-index se controla en la sección de arriba */
+      }
+    </style>
+  </head>
+  <body class="flex justify-center items-center min-h-screen font-sans px-6">
+    <audio id="miAudio" src="music/Wine_Ambience.mp3"></audio>
+    <!-- Efectos de fondo -->
+    <div class="dark-gradient"></div>
+    <div class="lightning"></div>
+    
+    <!-- Capa de niebla global -->
+    <div class="global-fog-overlay"></div>
+
+    <!-- Capas de niebla/humo -->
+    <div class="fog-layer fog-1"></div>
+    <div class="fog-layer fog-2"></div>
+    <div class="fog-layer fog-3"></div>
+    
+
+    <!-- Sombras en movimiento -->
+    <div class="moving-shadow shadow-1"></div>
+    <div class="moving-shadow shadow-2"></div>
+    <div class="moving-shadow shadow-3"></div>
+    
+    <!-- Contenedor de figuras -->
+    <div class="nightmare-figures">
+      <!-- Figura 1 - Pequeña a la izquierda -->
+      <!-- Modifica el valor 'left' para cambiar la posición horizontal de la figura -->
+      <svg class="nightmare-figure" style="position: absolute; left: 80%; top: 400px; height: 450px; width: 80px; animation-delay: 0s;" viewBox="0 0 80 250">
+        <path d="M40 30 Q35 40 35 60 L30 100 Q25 150 20 200 L15 250 L65 250 L60 200 Q55 150 50 100 L45 60 Q45 40 40 30" 
+              fill="#000000" opacity="0.9"/>
+        <!-- Cabeza -->
+        <ellipse cx="40" cy="30" rx="15" ry="20" fill="#000000"/>
+        <!-- Brazos largos -->
+        <path d="M35 80 Q20 120 10 160 Q5 180 0 200" stroke="#000000" stroke-width="8" fill="none" opacity="0.8"/>
+        <path d="M45 80 Q60 120 70 160 Q75 180 80 200" stroke="#000000" stroke-width="8" fill="none" opacity="0.8"/>
+        <!-- Sonrisa con dientes -->
+        <path d="M30 35 Q40 40 50 35" stroke="none" fill="none"/>
+        <rect x="32" y="33" width="1" height="4" class="nightmare-teeth"/>
+        <rect x="36" y="34" width="1" height="5" class="nightmare-teeth" style="animation-delay: 0.2s;"/>
+        <rect x="40" y="34" width="1" height="5.5" class="nightmare-teeth" style="animation-delay: 0.4s;"/>
+        <rect x="44" y="33" width="1" height="4.5" class="nightmare-teeth" style="animation-delay: 0.6s;"/>
+        <!-- Ojos ocasionales -->
+        <circle cx="35" cy="26" r="1.5" class="nightmare-eyes" style="animation-delay: 5s;"/>
+        <circle cx="45" cy="26" r="1.5" class="nightmare-eyes" style="animation-delay: 5s;"/>
+      </svg>
+      
+      <!-- Figura 2 - Alta en el centro izquierda -->
+      <!-- Modifica el valor 'left' para cambiar la posición horizontal de la figura -->
+      <svg class="nightmare-figure" style="left: 83%; height: 300px; width: 120px; animation-delay: 2s;" viewBox="0 0 100 350">
+        <path d="M50 40 Q45 50 43 80 L38 140 Q35 220 30 300 L25 350 L75 350 L70 300 Q65 220 62 140 L57 80 Q55 50 50 40" 
+              fill="#000000" opacity="0.9"/>
+        <!-- Cabeza alargada -->
+        <ellipse cx="50" cy="35" rx="18" ry="25" fill="#000000"/>
+        <!-- Brazos extra largos -->
+        <path d="M43 100 Q25 160 15 240 Q10 280 5 320" stroke="#000000" stroke-width="10" fill="none" opacity="0.8"/>
+        <path d="M57 100 Q75 160 85 240 Q90 280 95 320" stroke="#000000" stroke-width="10" fill="none" opacity="0.8"/>
+        <!-- Sonrisa amplia -->
+        <rect x="38" y="38" width="1" height="6" class="nightmare-teeth"/>
+        <rect x="42" y="39" width="1" height="8" class="nightmare-teeth" style="animation-delay: 0.3s;"/>
+        <rect x="46" y="40" width="1" height="9" class="nightmare-teeth" style="animation-delay: 0.6s;"/>
+        <rect x="50" y="40" width="1" height="7" class="nightmare-teeth" style="animation-delay: 0.9s;"/>
+        <rect x="54" y="39" width="1" height="8" class="nightmare-teeth" style="animation-delay: 1.2s;"/>
+        <rect x="58" y="38" width="1" height="6" class="nightmare-teeth" style="animation-delay: 1.5s;"/>
+        <!-- Ojos ocasionales -->
+        <circle cx="42" cy="28" r="2" class="nightmare-eyes" style="animation-delay: 4s;"/>
+        <circle cx="58" cy="28" r="2" class="nightmare-eyes" style="animation-delay: 4.5s;"/>
+      </svg>
+      
+      <!-- Figura 3 - Centro -->
+      <!-- Modifica el valor 'left' para cambiar la posición horizontal de la figura -->
+      <svg class="nightmare-figure" style="left: 88%; height: 500px; width: 120px; animation-delay: 4s;" viewBox="0 0 120 400">
+        <path d="M60 50 Q55 60 52 100 L45 180 Q40 280 35 360 L30 400 L90 400 L85 360 Q80 280 75 180 L68 100 Q65 60 60 50" 
+              fill="#000000" opacity="0.95"/>
+        <!-- Cabeza grande -->
+        <ellipse cx="60" cy="45" rx="22" ry="30" fill="#000000"/>
+        <!-- Hombros anchos -->
+        <ellipse cx="60" cy="100" rx="35" ry="20" fill="#000000" opacity="0.8"/>
+        <!-- Brazos colgantes -->
+        <path d="M45 120 Q30 200 20 300 Q15 350 10 390" stroke="#000000" stroke-width="12" fill="none" opacity="0.8"/>
+        <path d="M75 120 Q90 200 100 300 Q105 350 110 390" stroke="#000000" stroke-width="12" fill="none" opacity="0.8"/>
+        <!-- Sonrisa perturbadora -->
+        <path d="M40 50 Q60 58 80 50" stroke="none" fill="none"/>
+        <rect x="42" y="48" width="1.1" height="8" class="nightmare-teeth"/>
+        <rect x="47" y="49" width="1.9" height="7" class="nightmare-teeth" style="animation-delay: 0.2s;"/>
+        <rect x="52" y="50" width="1.2" height="8" class="nightmare-teeth" style="animation-delay: 0.4s;"/>
+        <rect x="57" y="50" width="1" height="8.5" class="nightmare-teeth" style="animation-delay: 0.6s;"/>
+        <rect x="62" y="49" width="1.5" height="8" class="nightmare-teeth" style="animation-delay: 0.8s;"/>
+        <rect x="67" y="48" width="1.2" height="7" class="nightmare-teeth" style="animation-delay: 1s;"/>
+        <!-- Ojos ocasionales -->
+        <circle cx="50" cy="40" r="2" class="nightmare-eyes" style="animation-delay: 50s;"/>
+        <circle cx="70" cy="40" r="2" class="nightmare-eyes" style="animation-delay: 10s;"/>
+      </svg>
+      
+      <!-- Figura 4 - Encorvada -->
+      <!-- Modifica el valor 'left' para cambiar la posición horizontal de la figura -->
+      <svg class="nightmare-figure" style="left: 94%; height: 280px; width: 100px; animation-delay: 6s;" viewBox="0 0 100 280">
+        <path d="M50 60 Q40 70 35 90 Q30 120 28 160 Q26 200 24 240 L20 280 L80 280 L76 240 Q74 200 72 160 Q70 120 65 90 Q60 70 50 60" 
+              fill="#000000" opacity="0.9"/>
+        <!-- Cabeza inclinada -->
+        <ellipse cx="45" cy="55" rx="20" ry="25" fill="#000000" transform="rotate(-15 45 55)"/>
+        <!-- Brazos desiguales -->
+        <path d="M35 100 Q20 140 10 190 Q5 220 0 250" stroke="#000000" stroke-width="9" fill="none" opacity="0.8"/>
+        <path d="M55 100 Q70 150 80 210 Q85 240 90 270" stroke="#000000" stroke-width="11" fill="none" opacity="0.8"/>
+        <!-- Sonrisa torcida -->
+        <rect x="35" y="58" width="1.2" height="3" class="nightmare-teeth" transform="rotate(-15 35 58)"/>
+        <rect x="39" y="59" width="1.2" height="5" class="nightmare-teeth" transform="rotate(-15 39 59)" style="animation-delay: 0.3s;"/>
+        <rect x="43" y="60" width="1.2" height="4" class="nightmare-teeth" transform="rotate(-15 43 60)" style="animation-delay: 0.6s;"/>
+        <rect x="47" y="59" width="1.2" height="3" class="nightmare-teeth" transform="rotate(-15 47 59)" style="animation-delay: 0.9s;"/>
+        <!-- Ojos ocasionales -->
+        <circle cx="38" cy="50" r="2" class="nightmare-eyes" transform="rotate(-15 45 55)" style="animation-delay: 400s;"/>
+        <circle cx="52" cy="50" r="2" class="nightmare-eyes" transform="rotate(-15 45 55)" style="animation-delay: 400s;"/>
+      </svg>
+      
+      <!-- Figura 5 - Alta a la derecha -->
+      <!-- Modifica el valor 'left' para cambiar la posición horizontal de la figura -->
+      <svg class="nightmare-figure" style="left: 97%; height: 320px; width: 90px; animation-delay: 8s;" viewBox="0 0 90 320">
+        <path d="M45 45 Q42 55 40 85 L35 150 Q32 230 28 290 L25 320 L65 320 L62 290 Q58 230 55 150 L50 85 Q48 55 45 45" 
+              fill="#000000" opacity="0.9"/>
+        <!-- Cabeza pequeña -->
+        <ellipse cx="45" cy="40" rx="15" ry="22" fill="#000000"/>
+        <!-- Cuerpo delgado -->
+        <!-- Brazos largos y delgados -->
+        <path d="M40 95 Q28 150 20 220 Q15 260 10 300" stroke="#000000" stroke-width="8" fill="none" opacity="0.8"/>
+        <path d="M50 95 Q62 150 70 220 Q75 260 80 300" stroke="#000000" stroke-width="8" fill="none" opacity="0.8"/>
+        <!-- Sonrisa estrecha -->
+        <rect x="37" y="42" width="1" height="3" class="nightmare-teeth"/>
+        <rect x="40" y="43" width="1" height="5" class="nightmare-teeth" style="animation-delay: 0.4s;"/>
+        <rect x="43" y="43" width="1" height="5.5" class="nightmare-teeth" style="animation-delay: 0.8s;"/>
+        <rect x="46" y="43" width="1" height="5.3" class="nightmare-teeth" style="animation-delay: 1.2s;"/>
+        <rect x="49" y="42" width="1" height="3" class="nightmare-teeth" style="animation-delay: 1.6s;"/>
+        <!-- Ojos ocasionales -->
+        <circle cx="40" cy="35" r="1.5" class="nightmare-eyes" style="animation-delay: 7.5s;"/>
+        <circle cx="50" cy="35" r="1.5" class="nightmare-eyes" style="animation-delay: 8.5s;"/>
+      </svg>
+    </div>
+
+    <!-- Opcional: Agregar una capa de niebla para hacer las figuras aún más sutiles -->
+    <div style="position: fixed; bottom: 0; left: 0; width: 100%; height: 200px; 
+                background: linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 100%); 
+                pointer-events: none; z-index: -7;"></div>
+
+    <!-- Criatura amorfa mejorada -->
+    <div class="monster-silhouette creature-shadow">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+        <!-- Cuerpo amorfo principal -->
+        <path d="M200 50 Q100 40 50 100 Q0 160 30 200 Q60 240 120 250 Q180 260 240 250 Q300 240 350 200 Q400 160 350 100 Q300 40 200 50 Z" 
+              fill="#000000" opacity="0.8"/>
+        
+        <!-- Deformidades y bultos -->
+        <ellipse cx="100" cy="120" rx="40" ry="60" fill="#000000" opacity="0.6" transform="rotate(-20 100 120)"/>
+        <ellipse cx="300" cy="130" rx="50" ry="40" fill="#000000" opacity="0.6" transform="rotate(30 300 130)"/>
+        <circle cx="200" cy="180" r="35" fill="#000000" opacity="0.5"/>
+        
+        <!-- Apéndices grotescos -->
+        <path d="M50 150 Q20 170 0 200 Q-20 230 -10 260" 
+              stroke="#000000" stroke-width="18" fill="none" opacity="0.7"/>
+        <path d="M350 150 Q380 170 400 200 Q420 230 410 260" 
+              stroke="#000000" stroke-width="18" fill="none" opacity="0.7"/>
+        
+        <!-- Ojos de la criatura amorfa -->
+        <!-- Múltiples ojos asimétricos -->
+        <ellipse cx="150" cy="100" rx="25" ry="15" class="monster-eye"/>
+        <ellipse cx="250" cy="110" rx="20" ry="18" class="monster-eye" style="animation-delay: 0.7s;"/>
+        <circle cx="200" cy="80" r="1" class="monster-eye" style="animation-delay: 1.2s;"/>
+        <circle cx="180" cy="130" r="4" class="monster-eye" style="animation-delay: 0.3s;"/>
+        <circle cx="220" cy="125" r="4" class="monster-eye" style="animation-delay: 1.8s;"/>
+        <circle cx="120" cy="140" r="1" class="monster-eye" style="animation-delay: 2.1s;"/>
+        <circle cx="280" cy="135" r="4" class="monster-eye" style="animation-delay: 0.9s;"/>
+        
+        <!-- Bocas múltiples -->
+        <path d="M150 160 Q200 180 250 160" 
+              stroke="#000000" stroke-width="8" fill="none" opacity="0.8"/>
+        <path d="M100 200 Q150 215 200 200" 
+              stroke="#000000" stroke-width="6" fill="none" opacity="0.6"/>
+        
+        <!-- Texturas orgánicas -->
+        <circle cx="160" cy="180" r="5" fill="#000000" opacity="0.4"/>
+        <circle cx="240" cy="170" r="7" fill="#000000" opacity="0.4"/>
+        <circle cx="200" cy="200" r="6" fill="#000000" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <!-- Tercer monstruo adicional -->
+    <div class="monster-silhouette" style="bottom: 100px; left: -200px; width: 350px; height: 350px; animation: slither 35s infinite ease-in-out;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350">
+        <!-- Forma de araña-pulpo deforme -->
+        <ellipse cx="175" cy="175" rx="80" ry="100" fill="#000000" opacity="0.8" transform="rotate(15 175 175)"/>
+        
+        <!-- Patas/tentáculos -->
+        <path d="M175 175 Q100 150 50 100 Q0 50 -20 0" stroke="#000000" stroke-width="16" fill="none" opacity="0.7"/>
+        <path d="M175 175 Q250 150 300 100 Q350 50 370 0" stroke="#000000" stroke-width="16" fill="none" opacity="0.7"/>
+        <path d="M175 175 Q100 200 50 250 Q0 300 -20 350" stroke="#000000" stroke-width="16" fill="none" opacity="0.7"/>
+        <path d="M175 175 Q250 200 300 250 Q350 300 370 350" stroke="#000000" stroke-width="16" fill="none" opacity="0.7"/>
+        <path d="M175 175 Q150 100 100 50 Q50 0 0 -20" stroke="#000000" stroke-width="14" fill="none" opacity="0.6"/>
+        <path d="M175 175 Q200 100 250 50 Q300 0 350 -20" stroke="#000000" stroke-width="14" fill="none" opacity="0.6"/>
+        
+        <!-- Racimo de ojos -->
+        <circle cx="160" cy="160" r="1" class="monster-eye"/>
+        <circle cx="190" cy="160" r="1" class="monster-eye" style="animation-delay: 0.4s;"/>
+        <circle cx="175" cy="140" r="4" class="monster-eye" style="animation-delay: 0.8s;"/>
+        <circle cx="175" cy="190" r="4" class="monster-eye" style="animation-delay: 1.2s;"/>
+        <circle cx="150" cy="175" r="3" class="monster-eye" style="animation-delay: 1.6s;"/>
+        <circle cx="200" cy="175" r="3" class="monster-eye" style="animation-delay: 2s;"/>
+      </svg>
+    </div>
+    
+    <!-- Partículas -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
+    
+    <!-- Contenido principal -->
+    <div class="w-full max-w-3xl relative z-10">
+      
+      
+      <h1 class="text-4xl lg:text-6xl font-bold mb-2">
+        <span class="text-2xl lg:text-4xl text-purple-300 block font-medium">Invoca los horrores antiguos,</span>
+        <span class="horror-title text-purple-500 glitch-text">Generador Lovecraftiano</span>
+      </h1>
+      
+      <p class="text-gray-400 mb-8 text-lg">
+        Susurra las palabras prohibidas y contempla las historias que no deberían ser contadas...
+      </p>
+      
+      <!-- Input para texto -->
+      <div class="flex justify-center items-start p-2"> <!-- Agregué este contenedor flex -->
+        <div class="w-full max-w-3xl"> <!-- Contenedor para mantener el ancho -->
+          <textarea 
+          id="horrorInput"
+          placeholder="Escribe las palabras clave para tu historia de terror... (ej: tentáculos, locura, oscuridad)"
+          class="w-full p-4 bg-gray-900/50 border border-purple-800/30 rounded-lg text-purple-200 placeholder-gray-600 
+          focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600/20 
+          backdrop-blur-sm resize-none transition-all duration-300"
+          rows="2"
+          ></textarea>
+          
+          <button 
+          onclick="generateHorror()"
+          class="mt-3 px-8 py-3 bg-purple-900/30 hover:bg-purple-800/40 text-purple-300 rounded-lg 
+          border border-purple-600/30 transition-all duration-300 hover:shadow-lg 
+          hover:shadow-purple-600/20 font-semibold backdrop-blur-sm"
+          >
+          Invocar Historia de Terror
+        </button>
+        <!-- Botón pequeño para pausar música -->
+        <button 
+        onclick="toggleMusic()"
+        class="ml-3 px-2 py-2 bg-purple-900/20 hover:bg-purple-800/30 text-purple-300 rounded-lg 
+        border border-purple-600/20 transition-all duration-300 hover:shadow-md 
+        hover:shadow-purple-600/10 font-semibold text-lg"        
+        >
+        🎵
+      </button>
+      </div>
+    </div>
+    
+    <!-- Área de historia generada -->
+    <div id="storyContainer" class="hidden animate-fade-in flex justify-center items-start p-2 mt-3">
+      <div class="bg-gray-900/30 border border-purple-800/30 rounded-lg
+      p-4 backdrop-blur-sm w-full max-w-3xl
+      flex flex-col"
+      style="height: calc(100vh - 500px); min-height: 300px; max-height: 500px;">
+      
+      <h2 id="storyTitle" class="horror-title text-2xl text-purple-400 mb-4 flex-shrink-0">
+        La Revelación Oscura
+      </h2>
+
+      
+      <div id="generatedStory" class="text-gray-300 leading-relaxed whitespace-pre-wrap 
+      overflow-y-auto flex-grow custom-scrollbar"
+      style="padding-right: 8px;">
+      <!-- El contenido de la historia aparecerá aquí -->
+    </div>
+  </div>
+</div>
+  
+  <!-- CSS adicional para personalizar la barra de scroll -->
+  <style>
+    /* Estilos para la barra de scroll personalizada */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(147, 51, 234, 0.1);
+      border-radius: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(147, 51, 234, 0.5);
+      border-radius: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(147, 51, 234, 0.7);
+    }
+    
+    /* Para Firefox */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(147, 51, 234, 0.5) rgba(147, 51, 234, 0.1);
+    }
+  </style>
+
+      
+      <!-- Loader -->
+      <div id="loader" class="hidden">
+        <div class="flex justify-center items-center space-x-2">
+          <div class="w-3 h-3 bg-purple-600 rounded-full animate-pulse"></div>
+          <div class="w-3 h-3 bg-purple-600 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+          <div class="w-3 h-3 bg-purple-600 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+        </div>
+      </div>
+    </div>
+
+
+<script>
+  const audio = document.getElementById('miAudio'); // Única referencia global
+  let fadeInterval = null; // guardamos el intervalo del fade-in
+
+// Historias de respaldo
+const fallbackStories = [
+  {
+    "title": "El Castillo de la Vigilia Eterna",
+    "story": "El viajero llegó al castillo cuando el sol apenas se ocultaba tras el horizonte, tiñendo las torres de un rojo enfermizo. La puerta principal estaba entreabierta, y un aire pesado lo empujaba hacia adentro, como si el castillo lo invitara y lo advirtiera a la vez. Desde el primer instante, las sombras lo rodearon. No eran simples ausencias de luz: se movían con intención, siempre justo fuera del alcance de su mirada, murmurando en un idioma que lo lastimaba en el pensamiento. Cada vez que desviaba la mirada, sentía que avanzaban, acercándose más que antes, creciendo en densidad y malicia.\n\nCaminó por pasillos que parecían cambiar de forma cuando parpadeaba. Un salón que recordaba se transformaba en otro, más oscuro, con techos que se inclinaban como si respiraran. Las sombras susurraban secretos que no entendía, pero cada palabra lo empujaba hacia un borde invisible de miedo y confusión.\n\nAl intentar descansar, se recostó en un antiguo diván cubierto de polvo. Cerró los ojos con fuerza, esperando que el sueño lo salvara. Por un instante, la calma llegó: los murmullos cesaron y las sombras se congelaron. Sintió alivio.\n\nPero entonces soñó… y en su sueño, el castillo se desdoblaba. Los pasillos se alargaban hasta el infinito, y las sombras danzaban sobre él, entrando por su boca, sus ojos, su piel. Abrió los ojos, creyendo despertar, solo para encontrar que estaba en la misma sala, pero distinta: paredes más altas, ventanas cerradas que antes estaban abiertas, y nuevas sombras que se movían donde no había ninguna antes.\n\nCada vez que intentaba dormir, el mismo ciclo comenzaba: el breve alivio del sueño, la sensación de que algo se detenía, y luego la revelación de que las sombras nunca habían dejado de moverse, que solo lo habían engañado. A veces sentía que su cuerpo estaba despierto, pero su mente vagaba entre pasillos imposibles, escuchando murmullos que decían su nombre.\n\nNo podía confiar ni en lo que veía ni en lo que soñaba. Todo era el castillo: el castillo que respiraba, que vigilaba, que aprendía de su miedo. Al amanecer, o lo que parecía ser el amanecer, el viajero no estaba. Algunos dicen que aún intenta dormir, y que mientras lo haga, las sombras esperan, inmóviles solo por su falsa calma. Otros juran escuchar un murmullo en la distancia: “No descanses… nunca descanses…”.\n\nY así, el castillo permanece, un lugar donde la vigilia y el sueño se confunden, donde las sombras se mueven, y donde nadie sabe si alguien alguna vez logra escapar de la percepción infinita que lo devora desde dentro."
+  },
+  {
+    "title": "El Susurro de los Bosques",
+    "story": "Cada noche, los bosques de Dunwich despiertan con una vida que parece propia, un latido oscuro que hace que incluso la brisa tiemble. Los aldeanos saben que adentrarse allí es peligroso: los árboles no son simples árboles. Sus troncos se retuercen y sus ramas se alargan como brazos hambrientos, y en la corteza pueden distinguirse bocas humanas, abiertas y silenciosas, y ojos que parpadean con un brillo enfermizo. Quienes han osado acercarse aseguran que los rostros de los atrapados dentro de la madera los siguen, murmurando sus nombres, susurrando secretos que desgarran la mente, atrapando la conciencia antes que el cuerpo.\n\nAl principio, los visitantes escuchan un murmullo distante, apenas perceptible. Pero a medida que avanzan, el bosque parece moverse a su alrededor: senderos que antes conocían desaparecen, los troncos se inclinan hacia ellos y las sombras se alargan, formando figuras humanas que se retuercen y gritan silenciosamente. Cada paso se siente observado, cada parpadeo arriesgado, porque en el momento en que dejan de mirar, las bocas y ojos de los árboles parecen moverse hacia ellos, acercándose con lentitud, como si el bosque mismo respirara y cazara.\n\nLos que intentan correr a menudo se pierden en un laberinto imposible. Los árboles cambian de lugar, las ramas se cierran como jaulas y los murmullos se transforman en gritos que perforan la mente. Algunos sienten que son absorbidos, que sus cuerpos se vuelven madera, que sus voces se suman al coro interminable de los atrapados. Otros logran salir, pero nunca recuperan la cordura; sus pesadillas están llenas de bocas que susurran desde la oscuridad y ojos que los siguen incluso en la luz del día.\n\nEl bosque permanece quieto durante el día, engañosamente inerte, pero en la noche se convierte en un depredador consciente, un laberinto de terror que juega con la percepción y los sentidos. Nadie sabe cuántos rostros se ocultan en los troncos, ni cuántos murmullos continúan creciendo en intensidad. Solo queda la certeza de que los que escuchan el llamado del bosque rara vez regresan, y que una vez atrapado en su susurro, el miedo y la locura se vuelven eternos."
+  },
+  {
+  "title": "El Color que Cayó del Cielo",
+  "story": "Una noche silenciosa en Arkham, un meteorito cayó sobre una granja aislada, trayendo consigo un color extraño y brillante que parecía imposible, como si no perteneciera a este mundo. Al principio, los habitantes de la granja lo observaron con asombro y fascinación, ignorando que aquel extraño visitante traía consigo un mal silencioso.\n\nEn los días que siguieron, comenzaron a notar cambios inquietantes: la tierra se marchitaba de manera extraña, los pozos de agua adquirieron un sabor metálico y los cultivos crecían deformes, con frutos que parecían palpitar con vida propia. Los animales también se transformaban; vacas, caballos y aves mostraban comportamientos y formas que desafiaban toda lógica. La familia que vivía allí empezaba a enfermar, primero con fatiga y confusión, luego con fiebre, delirios y locura. Cada día que pasaba, el color parecía expandirse, impregnando el cielo, los campos y los árboles, como si todo el mundo alrededor se doblegara ante su presencia.\n\nIntentaron huir, buscar refugio en el bosque cercano, pero todo parecía tocarse con aquel fenómeno imposible. La sensación de ser observados era constante, y una desesperanza silenciosa se instalaba en sus corazones. No había lugar seguro, y cada intento de resistir solo aumentaba la evidencia de que aquello era algo fuera de la comprensión humana, una fuerza indiferente a la vida y la cordura.\n\nFinalmente, la granja quedó desierta. Los sobrevivientes, si es que alguno quedó, sucumbieron a la locura. Los animales murieron o desaparecieron, y la tierra misma parecía corrompida. El color nunca se desvaneció; seguía allí, un recordatorio de la insignificancia y vulnerabilidad de la humanidad frente a fuerzas que no puede comprender. Aquella noche de caída del meteorito no solo marcó la granja, sino que dejó una cicatriz invisible en el mundo, una amenaza silenciosa que persistía, eterna, y que recordaba que hay misterios que los humanos jamás deberían tocar."
+  }
+
+];
+
+
+  function toggleMusic() {
+    if (!audio) return;
+
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+      if (fadeInterval) {
+        clearInterval(fadeInterval);
+        fadeInterval = null;
+      }
+    }
+  }
+
+  async function generateHorror() {
+    const prompt = document.getElementById("horrorInput").value;
+    if (!prompt) return;
+    
+    const storyContainer = document.getElementById("storyContainer");
+    const generatedStory = document.getElementById("generatedStory");
+    const titleElement = document.getElementById("storyTitle");
+    storyContainer.classList.remove("hidden");
+    generatedStory.textContent = "Invocando horrores...";
+    titleElement.textContent = "Invocando horrores...";
+
+    if (audio && audio.paused) {
+      audio.currentTime = 0;
+      audio.volume = 0;
+      audio.play();
+
+      fadeInterval = setInterval(() => {
+        if (audio.paused) {
+          clearInterval(fadeInterval);
+          fadeInterval = null;
+          return;
+        }
+        if (audio.volume < 0.5) {
+          audio.volume = Math.min(audio.volume + 0.01, 0.5);
+        } else {
+          clearInterval(fadeInterval);
+          fadeInterval = null;
+        }
+      }, 2000);
+    }
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+      
+      const data = await response.json();
+      titleElement.textContent = data.title;
+      generatedStory.textContent = data.story;
+    } catch (err) {
+      console.error(err);
+      // Selecciona una historia al azar de la cache
+      const randomStory = fallbackStories[Math.floor(Math.random() * fallbackStories.length)];
+      titleElement.textContent = randomStory.title;
+      generatedStory.textContent = randomStory.story;
+    }
+  }
+</script>
+
+  <!-- Imagen de fondo -->
+    <div class="bg-image"></div>
+ 
+  </div>
+  
+    
+  </body>
+</html>
