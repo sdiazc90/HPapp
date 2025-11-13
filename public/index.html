@@ -587,7 +587,7 @@
 
   <!-- Panel izquierdo -->
   <div id="leftPanel" class="flex flex-col justify-center items-center text-center p-6 transition-all"
-     style="width: 100%; max-width: 800px; transition: all 5s cubic-bezier(0.65, 0, 0.35, 1);">
+     style="width: 100%; max-width: 800px; transition: all 3s cubic-bezier(0.65, 0, 0.35, 1);">
     <h1 class="text-4xl lg:text-6xl font-bold mb-2">
       <span class="text-2xl lg:text-4xl text-purple-300 block font-medium">Invoca los horrores antiguos,</span>
       <span class="horror-title text-purple-500 glitch-text">Generador Lovecraftiano</span>
@@ -598,13 +598,14 @@
     </p>
     
     <textarea 
-      id="horrorInput"
-      placeholder="Escribe las palabras clave para tu historia de terror... (ej: tentáculos, locura, oscuridad)"
-      class="w-full max-w-md p-4 bg-gray-900/50 border border-purple-800/30 rounded-lg text-purple-200 placeholder-gray-600 
-      focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600/20 
-      backdrop-blur-sm resize-none transition-all duration-300 mb-3"
-      rows="2"
+    id="horrorInput"
+    placeholder="Escribe las palabras para tu historia de terror... (ej: tentáculos, locura, espectros)"
+    class="[width:99%] max-w-lg p-4 bg-gray-900/50 border border-purple-800/30 rounded-lg text-purple-200 placeholder-gray-600 
+         focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600/20 
+         backdrop-blur-sm resize-none transition-all duration-300 mb-3"
+    rows="2"
     ></textarea>
+
     
     <div class="flex items-center justify-center">
       <button 
