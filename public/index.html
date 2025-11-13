@@ -8,6 +8,32 @@
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Gothic+A1:wght@400;700&display=swap');
       
+      .main-container {
+        display: flex;
+        height: 100vh; /* ocupa toda la pantalla */
+        width: 100vw;
+      }
+
+      .left-panel {
+        width: 50%;
+        padding: 20px;
+        box-sizing: border-box;
+        /* deja tus efectos CSS existentes */
+      }
+
+      .right-panel {
+        width: 50%;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto; /* permite scroll si la historia es larga */
+        /* deja tus efectos CSS existentes */
+      }
+
+      #generated-story {
+        white-space: pre-wrap; /* respeta saltos de línea */
+      }
+
+      
       .horror-title {
         font-family: 'Creepster', cursive;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -556,69 +582,72 @@
     <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
     <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
     
-    <!-- Contenido principal -->
-    <div class="w-full max-w-3xl relative z-10">
-      
-      
-      <h1 class="text-4xl lg:text-6xl font-bold mb-2">
-        <span class="text-2xl lg:text-4xl text-purple-300 block font-medium">Invoca los horrores antiguos,</span>
-        <span class="horror-title text-purple-500 glitch-text">Generador Lovecraftiano</span>
-      </h1>
-      
-      <p class="text-gray-400 mb-8 text-lg">
-        Susurra las palabras prohibidas y contempla las historias que no deberían ser contadas...
-      </p>
-      
-      <!-- Input para texto -->
-      <div class="flex justify-center items-start p-2"> <!-- Agregué este contenedor flex -->
-        <div class="w-full max-w-3xl"> <!-- Contenedor para mantener el ancho -->
-          <textarea 
-          id="horrorInput"
-          placeholder="Escribe las palabras clave para tu historia de terror... (ej: tentáculos, locura, oscuridad)"
-          class="w-full p-4 bg-gray-900/50 border border-purple-800/30 rounded-lg text-purple-200 placeholder-gray-600 
-          focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600/20 
-          backdrop-blur-sm resize-none transition-all duration-300"
-          rows="2"
-          ></textarea>
-          
-          <button 
-          onclick="generateHorror()"
-          class="mt-3 px-8 py-3 bg-purple-900/30 hover:bg-purple-800/40 text-purple-300 rounded-lg 
-          border border-purple-600/30 transition-all duration-300 hover:shadow-lg 
-          hover:shadow-purple-600/20 font-semibold backdrop-blur-sm"
-          >
-          Invocar Historia de Terror
-        </button>
-        <!-- Botón pequeño para pausar música -->
-        <button 
+<!-- Contenedor principal -->
+<div id="mainContainer" class="relative w-full h-screen flex justify-center items-center overflow-hidden">
+
+  <!-- Panel izquierdo -->
+  <div id="leftPanel" class="flex flex-col justify-center items-center text-center p-6 transition-all"
+     style="width: 100%; max-width: 800px; transition: all 5s cubic-bezier(0.65, 0, 0.35, 1);">
+    <h1 class="text-4xl lg:text-6xl font-bold mb-2">
+      <span class="text-2xl lg:text-4xl text-purple-300 block font-medium">Invoca los horrores antiguos,</span>
+      <span class="horror-title text-purple-500 glitch-text">Generador Lovecraftiano</span>
+    </h1>
+    
+    <p class="text-gray-400 mb-8 text-lg">
+      Susurra las palabras prohibidas y contempla las historias que no deberían ser contadas...
+    </p>
+    
+    <textarea 
+      id="horrorInput"
+      placeholder="Escribe las palabras clave para tu historia de terror... (ej: tentáculos, locura, oscuridad)"
+      class="w-full max-w-md p-4 bg-gray-900/50 border border-purple-800/30 rounded-lg text-purple-200 placeholder-gray-600 
+      focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600/20 
+      backdrop-blur-sm resize-none transition-all duration-300 mb-3"
+      rows="2"
+    ></textarea>
+    
+    <div class="flex items-center justify-center">
+      <button 
+        onclick="generateHorror()"
+        class="px-8 py-3 bg-purple-900/30 hover:bg-purple-800/40 text-purple-300 rounded-lg 
+        border border-purple-600/30 transition-all duration-300 hover:shadow-lg 
+        hover:shadow-purple-600/20 font-semibold backdrop-blur-sm"
+      >
+        Invocar Historia de Terror
+      </button>
+
+      <button 
         onclick="toggleMusic()"
         class="ml-3 px-2 py-2 bg-purple-900/20 hover:bg-purple-800/30 text-purple-300 rounded-lg 
         border border-purple-600/20 transition-all duration-300 hover:shadow-md 
         hover:shadow-purple-600/10 font-semibold text-lg"        
-        >
+      >
         🎵
       </button>
-      </div>
-    </div>
-    
-    <!-- Área de historia generada -->
-    <div id="storyContainer" class="hidden animate-fade-in flex justify-center items-start p-2 mt-3">
-      <div class="bg-gray-900/30 border border-purple-800/30 rounded-lg
-      p-4 backdrop-blur-sm w-full max-w-3xl
-      flex flex-col"
-      style="height: calc(100vh - 500px); min-height: 300px; max-height: 500px;">
-      
-      <h2 id="storyTitle" class="horror-title text-2xl text-purple-400 mb-4 flex-shrink-0">
-        La Revelación Oscura
-      </h2>
-
-      
-      <div id="generatedStory" class="text-gray-300 leading-relaxed whitespace-pre-wrap 
-      overflow-y-auto flex-grow custom-scrollbar"
-      style="padding-right: 8px;">
-      <!-- El contenido de la historia aparecerá aquí -->
     </div>
   </div>
+
+  <!-- Panel derecho (invisible al inicio) -->
+  <!-- Panel derecho -->
+<div id="rightPanel" class="opacity-0 flex flex-col justify-start p-6"
+     style="width: 50%; max-width: 800px; position: absolute; right: 0; top: 0; bottom: 0; transition: all 1.5s cubic-bezier(0.65, 0, 0.35, 1);">
+    <div id="storyContainer" class="animate-fade-in flex justify-center items-start h-full">
+      <div class="bg-gray-900/30 border border-purple-800/30 rounded-lg
+        p-4 backdrop-blur-sm w-full flex flex-col"
+        style="height: calc(100vh - 100px); min-height: 300px;">
+        
+        <h2 id="storyTitle" class="horror-title text-2xl text-purple-400 mb-4 flex-shrink-0">
+          La Revelación Oscura
+        </h2>
+
+        <div id="generatedStory" class="text-gray-300 leading-relaxed whitespace-pre-wrap 
+          overflow-y-auto flex-grow custom-scrollbar"
+          style="padding-right: 8px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
   
   <!-- CSS adicional para personalizar la barra de scroll -->
@@ -665,27 +694,24 @@
   const audio = document.getElementById('miAudio'); // Única referencia global
   let fadeInterval = null; // guardamos el intervalo del fade-in
 
-// Historias de respaldo
-const fallbackStories = [
-  {
-    "title": "El Castillo de la Vigilia Eterna",
-    "story": "El viajero llegó al castillo cuando el sol apenas se ocultaba tras el horizonte, tiñendo las torres de un rojo enfermizo. La puerta principal estaba entreabierta, y un aire pesado lo empujaba hacia adentro, como si el castillo lo invitara y lo advirtiera a la vez. Desde el primer instante, las sombras lo rodearon. No eran simples ausencias de luz: se movían con intención, siempre justo fuera del alcance de su mirada, murmurando en un idioma que lo lastimaba en el pensamiento. Cada vez que desviaba la mirada, sentía que avanzaban, acercándose más que antes, creciendo en densidad y malicia.\n\nCaminó por pasillos que parecían cambiar de forma cuando parpadeaba. Un salón que recordaba se transformaba en otro, más oscuro, con techos que se inclinaban como si respiraran. Las sombras susurraban secretos que no entendía, pero cada palabra lo empujaba hacia un borde invisible de miedo y confusión.\n\nAl intentar descansar, se recostó en un antiguo diván cubierto de polvo. Cerró los ojos con fuerza, esperando que el sueño lo salvara. Por un instante, la calma llegó: los murmullos cesaron y las sombras se congelaron. Sintió alivio.\n\nPero entonces soñó… y en su sueño, el castillo se desdoblaba. Los pasillos se alargaban hasta el infinito, y las sombras danzaban sobre él, entrando por su boca, sus ojos, su piel. Abrió los ojos, creyendo despertar, solo para encontrar que estaba en la misma sala, pero distinta: paredes más altas, ventanas cerradas que antes estaban abiertas, y nuevas sombras que se movían donde no había ninguna antes.\n\nCada vez que intentaba dormir, el mismo ciclo comenzaba: el breve alivio del sueño, la sensación de que algo se detenía, y luego la revelación de que las sombras nunca habían dejado de moverse, que solo lo habían engañado. A veces sentía que su cuerpo estaba despierto, pero su mente vagaba entre pasillos imposibles, escuchando murmullos que decían su nombre.\n\nNo podía confiar ni en lo que veía ni en lo que soñaba. Todo era el castillo: el castillo que respiraba, que vigilaba, que aprendía de su miedo. Al amanecer, o lo que parecía ser el amanecer, el viajero no estaba. Algunos dicen que aún intenta dormir, y que mientras lo haga, las sombras esperan, inmóviles solo por su falsa calma. Otros juran escuchar un murmullo en la distancia: “No descanses… nunca descanses…”.\n\nY así, el castillo permanece, un lugar donde la vigilia y el sueño se confunden, donde las sombras se mueven, y donde nadie sabe si alguien alguna vez logra escapar de la percepción infinita que lo devora desde dentro."
-  },
-  {
-    "title": "El Susurro de los Bosques",
-    "story": "Cada noche, los bosques de Dunwich despiertan con una vida que parece propia, un latido oscuro que hace que incluso la brisa tiemble. Los aldeanos saben que adentrarse allí es peligroso: los árboles no son simples árboles. Sus troncos se retuercen y sus ramas se alargan como brazos hambrientos, y en la corteza pueden distinguirse bocas humanas, abiertas y silenciosas, y ojos que parpadean con un brillo enfermizo. Quienes han osado acercarse aseguran que los rostros de los atrapados dentro de la madera los siguen, murmurando sus nombres, susurrando secretos que desgarran la mente, atrapando la conciencia antes que el cuerpo.\n\nAl principio, los visitantes escuchan un murmullo distante, apenas perceptible. Pero a medida que avanzan, el bosque parece moverse a su alrededor: senderos que antes conocían desaparecen, los troncos se inclinan hacia ellos y las sombras se alargan, formando figuras humanas que se retuercen y gritan silenciosamente. Cada paso se siente observado, cada parpadeo arriesgado, porque en el momento en que dejan de mirar, las bocas y ojos de los árboles parecen moverse hacia ellos, acercándose con lentitud, como si el bosque mismo respirara y cazara.\n\nLos que intentan correr a menudo se pierden en un laberinto imposible. Los árboles cambian de lugar, las ramas se cierran como jaulas y los murmullos se transforman en gritos que perforan la mente. Algunos sienten que son absorbidos, que sus cuerpos se vuelven madera, que sus voces se suman al coro interminable de los atrapados. Otros logran salir, pero nunca recuperan la cordura; sus pesadillas están llenas de bocas que susurran desde la oscuridad y ojos que los siguen incluso en la luz del día.\n\nEl bosque permanece quieto durante el día, engañosamente inerte, pero en la noche se convierte en un depredador consciente, un laberinto de terror que juega con la percepción y los sentidos. Nadie sabe cuántos rostros se ocultan en los troncos, ni cuántos murmullos continúan creciendo en intensidad. Solo queda la certeza de que los que escuchan el llamado del bosque rara vez regresan, y que una vez atrapado en su susurro, el miedo y la locura se vuelven eternos."
-  },
-  {
-  "title": "El Color que Cayó del Cielo",
-  "story": "Una noche silenciosa en Arkham, un meteorito cayó sobre una granja aislada, trayendo consigo un color extraño y brillante que parecía imposible, como si no perteneciera a este mundo. Al principio, los habitantes de la granja lo observaron con asombro y fascinación, ignorando que aquel extraño visitante traía consigo un mal silencioso.\n\nEn los días que siguieron, comenzaron a notar cambios inquietantes: la tierra se marchitaba de manera extraña, los pozos de agua adquirieron un sabor metálico y los cultivos crecían deformes, con frutos que parecían palpitar con vida propia. Los animales también se transformaban; vacas, caballos y aves mostraban comportamientos y formas que desafiaban toda lógica. La familia que vivía allí empezaba a enfermar, primero con fatiga y confusión, luego con fiebre, delirios y locura. Cada día que pasaba, el color parecía expandirse, impregnando el cielo, los campos y los árboles, como si todo el mundo alrededor se doblegara ante su presencia.\n\nIntentaron huir, buscar refugio en el bosque cercano, pero todo parecía tocarse con aquel fenómeno imposible. La sensación de ser observados era constante, y una desesperanza silenciosa se instalaba en sus corazones. No había lugar seguro, y cada intento de resistir solo aumentaba la evidencia de que aquello era algo fuera de la comprensión humana, una fuerza indiferente a la vida y la cordura.\n\nFinalmente, la granja quedó desierta. Los sobrevivientes, si es que alguno quedó, sucumbieron a la locura. Los animales murieron o desaparecieron, y la tierra misma parecía corrompida. El color nunca se desvaneció; seguía allí, un recordatorio de la insignificancia y vulnerabilidad de la humanidad frente a fuerzas que no puede comprender. Aquella noche de caída del meteorito no solo marcó la granja, sino que dejó una cicatriz invisible en el mundo, una amenaza silenciosa que persistía, eterna, y que recordaba que hay misterios que los humanos jamás deberían tocar."
-  }
-
-];
-
+  // Historias de respaldo
+  const fallbackStories = [
+    {
+      "title": "El Castillo de la Vigilia Eterna",
+      "story": "El viajero llegó al castillo..."
+    },
+    {
+      "title": "El Susurro de los Bosques",
+      "story": "Cada noche, los bosques de Dunwich..."
+    },
+    {
+      "title": "El Color que Cayó del Cielo",
+      "story": "Una noche silenciosa en Arkham..."
+    }
+  ];
 
   function toggleMusic() {
     if (!audio) return;
-
     if (audio.paused) {
       audio.play();
     } else {
@@ -707,6 +733,19 @@ const fallbackStories = [
     storyContainer.classList.remove("hidden");
     generatedStory.textContent = "Invocando horrores...";
     titleElement.textContent = "Invocando horrores...";
+
+    // Mostrar panel derecho y dividir pantalla
+    const left = document.getElementById("leftPanel");
+    const right = document.getElementById("rightPanel");
+    right.style.opacity = "1";
+    left.style.position = "absolute";
+    left.style.left = "0";
+    left.style.top = "0";
+    left.style.bottom = "0";
+    left.style.width = "50%";
+    left.style.maxWidth = "none";
+    left.style.alignItems = "flex-start";
+    left.style.textAlign = "left";
 
     if (audio && audio.paused) {
       audio.currentTime = 0;
@@ -740,7 +779,6 @@ const fallbackStories = [
       generatedStory.textContent = data.story;
     } catch (err) {
       console.error(err);
-      // Selecciona una historia al azar de la cache
       const randomStory = fallbackStories[Math.floor(Math.random() * fallbackStories.length)];
       titleElement.textContent = randomStory.title;
       generatedStory.textContent = randomStory.story;
