@@ -1,15 +1,24 @@
+// server.js (inicio)
 import express from 'express';
 import fetch from 'node-fetch';
-import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config(); // Carga las variables de entorno desde .env en desarrollo
+// Cargar dotenv SOLO en desarrollo para no interferir con variables
+if (process.env.NODE_ENV !== 'production') {
+  // carga .env localmente
+  // nota: import dinámico evita problemas en entornos ESM cuando no queremos dotenv en prod
+  await import('dotenv').then(mod => mod.config());
+}
+
+// DEBUG temporal: no imprimir la API key, solo su longitud
+console.log("DEBUG - GEMINI_API_KEY length:", (process.env.GEMINI_API_KEY || "").length);
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.static('public')); // Carpeta para CSS, JS, imágenes, etc.
+
 
 // Ruta principal
 app.get('/', (req, res) => {
