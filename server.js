@@ -5,7 +5,7 @@ import path from 'path';
 
 const app = express();
 
-// Cargar dotenv SOLO en desarrollo
+// Cargar dotenv SOLO en desarrollo para no interferir con variables de Render
 if (process.env.NODE_ENV !== 'production') {
   await import('dotenv').then(mod => mod.config());
 }
@@ -51,16 +51,13 @@ CUENTO: <el texto del cuento>
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
-    // ESTA ES LA URL COMPLETA QUE NECESITÁS:
-    const url = 'https://generativelanguage.googleapis.com';
-
     const response = await fetch(
-      url,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-goog-api-key': process.env.GEMINI_API_KEY
+          'X-goog-api-key': process.env.GEMINI_API_KEY
         },
         body: JSON.stringify(body),
         signal: controller.signal
@@ -79,6 +76,7 @@ CUENTO: <el texto del cuento>
     }
 
     const data = await response.json();
+
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "TÍTULO: Historia de Terror\nCUENTO: ⚠️ Sin respuesta";
 
     let title = "Historia de Terror";
