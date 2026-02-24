@@ -52,7 +52,7 @@ CUENTO: <el texto del cuento>
     const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
     const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+      'https://generativelanguage.googleapis.com',
       {
         method: 'POST',
         headers: {
