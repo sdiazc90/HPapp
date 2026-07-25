@@ -55,6 +55,7 @@
           rgba(10, 10, 10, 0.6) 100%  /* negro 60% opaco */
         );
         z-index: -10;
+        contain: paint;
       }
 
       
@@ -75,6 +76,8 @@
         transform: skewX(-20deg);
         animation: lightning 8s infinite;
         z-index: -5;
+        contain: paint;
+        will-change: opacity;
       }
       
       .bg-image {
@@ -98,6 +101,8 @@
         background: radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, transparent 40%);
         pointer-events: none;
         z-index: -8;
+        will-change: transform;
+        transform: translateZ(0);
       }
       
       .shadow-1 {
@@ -158,24 +163,24 @@
         pointer-events: none;
         /* z-index se controla en la sección de arriba */
         opacity: 0.3;
-        filter: blur(1px);
+        /* filter: blur(1px); -> removido: blur animado es costoso en GPU/CPU */
+        will-change: transform;
+        transform: translateZ(0);
       }
       
-      /* Animación de ojos pulsantes */
+      /* Animación de ojos pulsantes (optimizada: solo opacity, sin animar filter) */
       @keyframes eyeGlow {
         0%, 100% { 
-          fill: #ff0000; 
-          filter: drop-shadow(0 0 3px #ff0000) drop-shadow(0 0 10px #ff0000);
           opacity: 0.4;
         }
         50% { 
-          fill: #ff6666; 
-          filter: drop-shadow(0 0 8px #ff0000) drop-shadow(0 0 20px #ff0000);
           opacity: 1;
         }
       }
       
       .monster-eye {
+        fill: #ff0000;
+        filter: drop-shadow(0 0 6px #ff0000); /* estático, no animado */
         animation: eyeGlow 3s infinite ease-in-out;
       }
       
@@ -212,7 +217,8 @@
         pointer-events: none;
         /* z-index se controla en la sección de arriba */
         opacity: 0.3;
-        filter: blur(0.5px);
+        /* filter: blur(0.5px); -> removido: blur animado es costoso en GPU/CPU */
+        contain: paint;
       }
       
       .nightmare-figure {
@@ -220,6 +226,8 @@
         bottom: 0;
         filter: contrast(1.2);
         animation: sway 20s infinite ease-in-out;
+        will-change: transform;
+        transform: translateZ(0);
       }
       
       /* Animación de balanceo sutil */
@@ -230,21 +238,19 @@
         75% { transform: translateX(-5px) scaleY(1.01); }
       }
       
-      /* Sonrisas brillantes pulsantes */
+      /* Sonrisas brillantes pulsantes (optimizada: solo opacity) */
       @keyframes teethGlow {
         0%, 100% { 
-          fill: #ffffff;
-          filter: drop-shadow(0 0 2px #ffffff);
           opacity: 0.6;
         }
         50% { 
-          fill: #ffffcc;
-          filter: drop-shadow(0 0 5px #ffffff);
           opacity: 0.9;
         }
       }
       
       .nightmare-teeth {
+        fill: #ffffcc;
+        filter: drop-shadow(0 0 3px #ffffff); /* estático, no animado */
         animation: teethGlow 4s infinite ease-in-out;
       }
       
@@ -305,6 +311,7 @@
         background: #9333ea;
         border-radius: 50%;
         animation: floatUp 10s infinite linear;
+        will-change: transform, opacity;
       }
       
       @keyframes floatUp {
@@ -323,6 +330,8 @@
         background-repeat: no-repeat;
         opacity: 0.2;
         /* z-index se controla en la sección de arriba */
+        contain: paint;
+        will-change: transform;
       }
 
       .fog-1 {
@@ -360,15 +369,22 @@
         }
       }
 
-      /* Efecto de niebla global con blur */
+      /* Efecto de niebla global (optimizado: sin backdrop-filter, que es muy costoso a pantalla completa) */
       .global-fog-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(180, 190, 210, 0.05); /* Fondo semitransparente muy sutil */
-        backdrop-filter: blur(2px); /* Efecto niebla/vidrio */
-        -webkit-backdrop-filter: blur(1px); /* Para navegadores más antiguos */
+        background: rgba(180, 190, 210, 0.04);
         pointer-events: none;
         /* z-index se controla en la sección de arriba */
+        contain: paint;
+      }
+
+      /* Reducir movimiento para quienes lo prefieran / hardware más limitado */
+      @media (prefers-reduced-motion: reduce) {
+        .lightning, .moving-shadow, .monster-silhouette,
+        .nightmare-figure, .particle::before, .fog-layer {
+          animation: none;
+        }
       }
     </style>
   </head>
